@@ -38954,17 +38954,6 @@ const actions = {
 		commit('EDIT_TRANSACTION', transaction);
 		__WEBPACK_IMPORTED_MODULE_0_axios___default.a.put(`/api/transaction/${transaction.id}`, transaction);
 	}
-
-	// postTransactions({commit}) {
-	// 	axios.post('/api/account/${asd}/transaction/'  {
-	// 		transaction
-	// 	})
-	// 		.then((response) =>{
-	// 			console.log(response)
-	// 		})
-	// }
-
-
 };
 
 /* harmony default export */ __webpack_exports__["a"] = {
@@ -38983,21 +38972,24 @@ const actions = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_transactions__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_budgets__ = __webpack_require__(400);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__modules_accounts__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__modules_transactions__ = __webpack_require__(213);
 // store.js
 
 
 
 
+
+
+
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex___default.a);
-
-
 /* harmony default export */ __webpack_exports__["a"] = new __WEBPACK_IMPORTED_MODULE_1_vuex___default.a.Store({
 
 	modules: {
-		transactions: __WEBPACK_IMPORTED_MODULE_2__modules_transactions__["a" /* default */],
-		accounts: __WEBPACK_IMPORTED_MODULE_3__modules_accounts__["a" /* default */]
+		transactions: __WEBPACK_IMPORTED_MODULE_4__modules_transactions__["a" /* default */],
+		accounts: __WEBPACK_IMPORTED_MODULE_3__modules_accounts__["a" /* default */],
+		budgets: __WEBPACK_IMPORTED_MODULE_2__modules_budgets__["a" /* default */]
 	}
 
 });
@@ -50706,6 +50698,169 @@ if (false) {
 __webpack_require__(136);
 module.exports = __webpack_require__(137);
 
+
+/***/ }),
+/* 307 */,
+/* 308 */,
+/* 309 */,
+/* 310 */,
+/* 311 */,
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */,
+/* 317 */,
+/* 318 */,
+/* 319 */,
+/* 320 */,
+/* 321 */,
+/* 322 */,
+/* 323 */,
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */,
+/* 328 */,
+/* 329 */,
+/* 330 */,
+/* 331 */,
+/* 332 */,
+/* 333 */,
+/* 334 */,
+/* 335 */,
+/* 336 */,
+/* 337 */,
+/* 338 */,
+/* 339 */,
+/* 340 */,
+/* 341 */,
+/* 342 */,
+/* 343 */,
+/* 344 */,
+/* 345 */,
+/* 346 */,
+/* 347 */,
+/* 348 */,
+/* 349 */,
+/* 350 */,
+/* 351 */,
+/* 352 */,
+/* 353 */,
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */,
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */,
+/* 369 */,
+/* 370 */,
+/* 371 */,
+/* 372 */,
+/* 373 */,
+/* 374 */,
+/* 375 */,
+/* 376 */,
+/* 377 */,
+/* 378 */,
+/* 379 */,
+/* 380 */,
+/* 381 */,
+/* 382 */,
+/* 383 */,
+/* 384 */,
+/* 385 */,
+/* 386 */,
+/* 387 */,
+/* 388 */,
+/* 389 */,
+/* 390 */,
+/* 391 */,
+/* 392 */,
+/* 393 */,
+/* 394 */,
+/* 395 */,
+/* 396 */,
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+
+
+const state = {
+	budgets: []
+};
+const getters = {
+	allBudgets: state => state.budgets
+};
+
+const mutations = {
+	SET_BUDGETS(state, data) {
+		state.budgets = data;
+	},
+
+	ADD_BUDGET(state, budget) {
+		state.budgets.push(budget);
+	},
+
+	DELETE_BUDGET(state, budget) {
+		state.budgets.splice(state.budgets.indexOf(budget), 1);
+	},
+
+	EDIT_BUDGET(state, budget) {
+		state.budgets.find(p => p.id == budget.id) == budget;
+	}
+};
+
+const actions = {
+	getAccounts({ commit }) {
+		__WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/budget').then(response => {
+			commit('SET_BUDGETS', response.data.data);
+		});
+	},
+
+	addAccount({ commit }, budget) {
+		commit('ADD_BUDGET', budget);
+		__WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/budget', {
+			name: budget.name
+		});
+	},
+
+	deleteAccount({ commit }, budget) {
+		commit('DELETE_BUDGET', budget);
+		__WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/budget/' + budget.id);
+	},
+
+	editAccount({ commit }, budget) {
+		commit('EDIT_BUDGET', budget);
+		__WEBPACK_IMPORTED_MODULE_0_axios___default.a.put(`/api/budget/${budget.id}`, JSON.parse(JSON.stringify(budget)));
+	},
+
+	setCurrentAccount({ commit }, budget) {
+		commit('CURRENT_BUDGET', budget);
+	}
+};
+
+/* harmony default export */ __webpack_exports__["a"] = {
+	state,
+	getters,
+	mutations,
+	actions
+};
 
 /***/ })
 /******/ ]);

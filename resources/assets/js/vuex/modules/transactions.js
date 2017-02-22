@@ -43,17 +43,6 @@ const actions =  {
 		commit('EDIT_TRANSACTION', transaction)
 		axios.put(`/api/transaction/${transaction.id}`, transaction)
 	}
-
-	// postTransactions({commit}) {
-	// 	axios.post('/api/account/${asd}/transaction/'  {
-	// 		transaction
-	// 	})
-	// 		.then((response) =>{
-	// 			console.log(response)
-	// 		})
-	// }
-
-
 }
 
 export default {
