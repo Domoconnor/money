@@ -28,32 +28,29 @@ const mutations = {
 }
 
 const actions = {
-	getAccounts({commit}){
+	getBudgets({commit}){
 		axios.get('/api/budget')
 			.then((response) => {
 				commit('SET_BUDGETS', response.data.data);
 			})
 	},
 
-	addAccount({commit}, budget) {
-		commit('ADD_BUDGET', budget)
+	addBudget({commit}, {name: name, amount: amount}) {
+		commit('ADD_BUDGET', {name, amount})
 		axios.post('/api/budget', {
-			name: budget.name
+			name,
+			amount
 		})
 	},
 
-	deleteAccount({commit}, budget) {
+	deleteBudget({commit}, budget) {
 		commit('DELETE_BUDGET', budget)
 		axios.delete('/api/budget/'+budget.id)
 	},
 
-	editAccount({commit}, budget){
+	editBudget({commit}, budget){
 		commit('EDIT_BUDGET', budget)
 		axios.put(`/api/budget/${budget.id}`, JSON.parse(JSON.stringify(budget)))
-	},
-
-	setCurrentAccount({commit}, budget){
-		commit('CURRENT_BUDGET', budget)
 	}
 }
 

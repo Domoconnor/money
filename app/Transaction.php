@@ -8,11 +8,16 @@ class Transaction extends Model
 {
 	protected $fillable = [
 		'name',
-		'amount'
+		'amount',
 	];
 
 	public function account()
 	{
 		return $this->belongsTo('App\Account');
+	}
+
+	public function budget()
+	{
+		return $this->belongsTo('App\Transaction');
 	}
 }

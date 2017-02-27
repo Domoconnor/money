@@ -114,7 +114,7 @@ class AccountController extends Controller
 		}
 		catch (Exception $e)
 		{
-			return $this->returnError('500', 'Could not save Account');
+			return $this->returnError('500', 'Could not update Account');
 		}
 
 
@@ -136,7 +136,7 @@ class AccountController extends Controller
 		}
 		catch (Exception $e)
 		{
-			return $this->returnError('500', 'Could not save Account');
+			return $this->returnError('500', 'Could not delete Account');
 		}
 		return $this->returnSuccess();
 

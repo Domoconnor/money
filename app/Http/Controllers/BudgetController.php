@@ -1,29 +1,22 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Auth;
 use App\Budget;
-use App\Account;
-use App\Transaction;
 use Illuminate\Http\Request;
 
-class TransactionController extends Controller
+class BudgetController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($account = null)
+    public function index()
     {
-        if($account)
-		{
-			return $this->returnSuccess(Account::findorfail($account)->transactions()->get());
-		}
-		return $this->returnSuccess(Auth::user()->transactions()->get());
-
-
-	}
+		return $this->returnSuccess(Auth::user()->budgets()->get());
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -41,21 +34,20 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $account)
+    public function store(Request $request)
     {
-		$transaction = new Transaction($request->except('budget'));
-		$transaction->account()->associate($account);
-		$transaction->budget()->associate(Budget::find($request->budget));
+		$budget = new Budget($request->all());
+		$budget->user()->associate(Auth::user());
 		try
 		{
-			$transaction->save();
+			$budget->save();
 		}
 		catch (Exception $e)
 		{
-			return $this->returnError('500', 'Could create the transaction');
+			return $this->returnError('500', 'Could create the budget');
 		}
 
-		return $this->returnSuccess($transaction);
+		return $this->returnSuccess($budget);
     }
 
     /**
@@ -89,27 +81,8 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-		try
-		{
-			$transaction = Transaction::findorfail($id);
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('404', 'Transaction not found');
-		}
-
-		$transaction->fill($request->all());
-		try
-		{
-			$transaction->save();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could not save transaction');
-		}
-
-		return $this->returnSuccess($transaction);
-	}
+        //
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -119,15 +92,6 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-		try
-		{
-			$transaction = Transaction::findorfail($id);
-			$transaction->delete();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could not delete transaction');
-		}
-		return $this->returnSuccess();
+        //
     }
 }

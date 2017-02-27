@@ -10,7 +10,6 @@ const getters = {
 
 const mutations = {
 	ADD_TRANSACTION(state, {name, amount}) {
-
 		state.transactions.push({
 			name,
 			amount
@@ -23,7 +22,11 @@ const mutations = {
 
 	EDIT_TRANSACTION(state, transaction) {
 		state.transactions.find(p => p.id == transaction.id) == transaction;
-	}
+	},
+
+	DELETE_TRANSACTION(state, transaction) {
+		state.transactions.splice(state.transactions.indexOf(transaction), 1)
+	},
 }
 
 const actions =  {
@@ -42,7 +45,13 @@ const actions =  {
 	editTransaction({commit}, transaction) {
 		commit('EDIT_TRANSACTION', transaction)
 		axios.put(`/api/transaction/${transaction.id}`, transaction)
-	}
+	},
+
+	deleteTransaction({commit}, transaction) {
+		commit('DELETE_TRANSACTION', transaction)
+		axios.delete('/api/transaction/'+transaction.id)
+	},
+
 }
 
 export default {

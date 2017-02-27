@@ -17,4 +17,7 @@ Vue.component('account', require('./Account.vue'));
 Vue.component('account-list', require('./AccountList.vue'));
 Vue.component('transaction', require('./Transaction.vue'));
 Vue.component('transaction-list', require('./TransactionList.vue'));
+Vue.component('budget-list', require('./BudgetList.vue'));
+Vue.component('budget', require('./Budget.vue'));
+
 
