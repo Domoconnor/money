@@ -38206,6 +38206,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 
 
@@ -38242,6 +38245,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 		updateName(e) {
 			let transaction = this.transaction;
 			transaction.name = e.target.value;
+			this.$store.dispatch("editTransaction", transaction);
+		},
+
+		updateBudget(e) {
+			let transaction = this.transaction;
+			transaction.budget_id = parseInt(e.target.value);
 			console.log(transaction);
 			this.$store.dispatch("editTransaction", transaction);
 		},
@@ -51014,7 +51023,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       "blur": _vm.editable
     }
-  }) : _vm._e()]), _vm._v(" "), (_vm.budget) ? _c('td', [_vm._v("\n\t\t" + _vm._s(_vm.budget.name) + "\n\t")]) : _vm._e(), _vm._v(" "), _c('td', [(!_vm.editing) ? _c('span', {
+  }) : _vm._e()]), _vm._v(" "), (_vm.budget) ? _c('td', [(!_vm.editing) ? _c('span', {
+    on: {
+      "click": _vm.editable
+    }
+  }, [_vm._v(_vm._s(_vm.budget.name))]) : _vm._e(), _vm._v(" "), (_vm.editing) ? _c('select', {
+    on: {
+      "change": _vm.updateBudget
+    }
+  }, _vm._l((_vm.allBudgets), function(budget) {
+    return _c('option', {
+      domProps: {
+        "value": budget.id
+      }
+    }, [_vm._v(_vm._s(budget.name))])
+  })) : _vm._e()]) : _vm._e(), _vm._v(" "), _c('td', [(!_vm.editing) ? _c('span', {
     on: {
       "click": _vm.editable
     }

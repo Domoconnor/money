@@ -6,7 +6,10 @@
 				   @keyup.enter="updateName" @blur="editable" :value="transaction.name">
 		</td>
 		<td v-if="budget">
-			{{budget.name}}
+			<span v-if="!editing" @click="editable">{{budget.name}}</span>
+			<select v-if="editing" @change="updateBudget">
+				<option v-for="budget in allBudgets" :value="budget.id">{{budget.name}}</option>
+			</select>
 		</td>
 		<td>
 			<span v-if="!editing" @click="editable">{{transaction.amount}}</span>
@@ -57,6 +60,12 @@
 			updateName (e) {
 				let transaction = this.transaction;
 				transaction.name =  e.target.value
+				this.$store.dispatch("editTransaction", transaction)
+			},
+
+			updateBudget(e){
+				let transaction = this.transaction;
+				transaction.budget_id =  parseInt(e.target.value)
 				console.log(transaction)
 				this.$store.dispatch("editTransaction", transaction)
 			},

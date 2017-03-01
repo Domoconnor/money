@@ -99,6 +99,7 @@ class TransactionController extends Controller
 		}
 
 		$transaction->fill($request->all());
+
 		try
 		{
 			$transaction->save();
