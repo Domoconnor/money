@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Account;
 use App\User;
 use App\Transaction;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -21,18 +20,29 @@ class TransactionPolicy
         //
     }
 
+
 	public function update(User $user, Transaction $transaction)
 	{
-		if($user->id === $transaction->account->user->id)
-		{
-			return true;
-		}
-		return false;
+		return $this->allowUser($user, $transaction);
 	}
 
-	public function view(User $user, Account $account)
+
+	public function destroy(User $user, Transaction $transaction)
 	{
-		if ($user->id === $account->id)
+		return $this->allowUser($user, $transaction);
+
+	}
+
+	/**
+	 * Allow a user to do anything to their own transactions
+	 *
+	 * @param User $user
+	 * @param Transaction $transaction
+	 * @return bool
+	 */
+	private function allowUser(User $user, Transaction $transaction)
+	{
+		if($user->id === $transaction->account->user->id)
 		{
 			return true;
 		}

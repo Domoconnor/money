@@ -7,6 +7,7 @@ use App\Budget;
 use App\Account;
 use App\Transaction;
 use Illuminate\Http\Request;
+use League\Flysystem\Exception;
 
 class TransactionController extends Controller
 {
@@ -48,10 +49,6 @@ class TransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request, Account $account)
     {
-
-    	$this->authorize('store', Transaction::class);
-
-
 		$transaction = new Transaction($request->except('budget'));
 		$transaction->account()->associate($account);
 		$transaction->budget()->associate(Budget::find($request->budget));
@@ -108,7 +105,7 @@ class TransactionController extends Controller
 		}
 
 		//Check the user has permission to update this transaction
-		$this->authorize($transaction);
+		$this->authorize('update', $transaction);
 
 
 		$transaction->fill($request->all());
@@ -133,9 +130,20 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-		try
+
+    	try
 		{
 			$transaction = Transaction::findorfail($id);
+		}
+		catch (Exception $e)
+		{
+			return $this->returnError('404', 'Could not find transaction');
+		}
+
+		$this->authorize('destroy', $transaction);
+
+		try
+		{
 			$transaction->delete();
 		}
 		catch (Exception $e)
