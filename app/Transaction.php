@@ -21,4 +21,9 @@ class Transaction extends Model
 	{
 		return $this->belongsTo('App\Transaction');
 	}
+
+	public function user()
+	{
+		return $this->hasManyThrough('App\User', 'App\Account');
+	}
 }

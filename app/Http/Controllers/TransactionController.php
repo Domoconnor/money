@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\StoreTransactionRequest;
 use Auth;
 use App\Budget;
 use App\Account;
@@ -9,15 +10,19 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+	/**
+	 * Returns all the transactions belonging to an account. If nothing is passed in then the logged in user's details
+	 * transactions are returned
+	 *
+	 * @param null|Account $account	The account object to get the list of transactions for
+	 * @return \Illuminate\Http\JsonResponse
+	 */
     public function index($account = null)
     {
         if($account)
 		{
+			$this->authorize('view', $account);
 			return $this->returnSuccess(Account::findorfail($account)->transactions()->get());
 		}
 		return $this->returnSuccess(Auth::user()->transactions()->get());
@@ -41,8 +46,12 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $account)
+    public function store(StoreTransactionRequest $request, Account $account)
     {
+
+    	$this->authorize('store', Transaction::class);
+
+
 		$transaction = new Transaction($request->except('budget'));
 		$transaction->account()->associate($account);
 		$transaction->budget()->associate(Budget::find($request->budget));
@@ -97,6 +106,10 @@ class TransactionController extends Controller
 		{
 			return $this->returnError('404', 'Transaction not found');
 		}
+
+		//Check the user has permission to update this transaction
+		$this->authorize($transaction);
+
 
 		$transaction->fill($request->all());
 
