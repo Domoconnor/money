@@ -4,7 +4,7 @@
 
 		<div class="panel-body">
 			<i @click="addTransaction" class="glyphicon glyphicon-plus"></i>
-			<table v-if="allTransactions" class="table table-striped">
+			<table class="table table-striped">
 				<thead>
 				<tr>
 					<th>Name</th>
@@ -27,10 +27,9 @@
 						<input type="text-area" v-model="form.amount" class="form-control" @keyup.enter="addTransaction({form, currentAccount})">
 					</td>
 				</tr>
-				<transaction  v-for="(transaction, key) in allTransactions" :transaction="transaction"></transaction>
+				<transaction v-if="allTransactions" v-for="(transaction, key) in allTransactions" :transaction="transaction"></transaction>
 				</tbody>
 			</table>
-			{{currentAccount}}
 		</div>
 	</div>
 </template>

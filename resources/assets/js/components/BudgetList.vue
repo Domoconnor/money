@@ -41,7 +41,7 @@
 		},
 
 		computed: {
-			...mapGetters(['allBudgets'])
+			...mapGetters(['allBudgets']),
 		},
 
 		methods: {

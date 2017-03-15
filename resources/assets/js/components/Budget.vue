@@ -1,7 +1,7 @@
 <template>
 	<tr>
 		<td>{{budget.name}}</td>
-		<td>{{budget.amount}}</td>
+		<td>{{budgetTotal}}</td>
 
 	</tr>
 </template>
@@ -18,13 +18,26 @@
 			return {
 			}
 		},
+		mounted() {
+			this.getTransactions();
+		},
+
+
+		computed: {
+			...mapGetters(['allTransactions']),
+
+			budgetTotal() {
+				let transactionTotal =  this.allTransactions.reduce((total, transaction) => transaction.budget_id == this.budget.id ? total + Number(transaction.amount) : total, 0);
+				return this.budget.amount - transactionTotal;
+			}
+		},
 
 		...mapState({
 			budget: state => state.budgets[budget.id]
 		}),
 
 		methods: {
-			...mapActions(['deleteBudget']),
+			...mapActions(['deleteBudget', 'getTransactions']),
 		}
 
 

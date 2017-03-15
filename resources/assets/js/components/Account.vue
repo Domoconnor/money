@@ -25,7 +25,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
             ...mapGetters(['allAccounts', 'currentAccount', 'allTransactions']),
 
 			sum() {
-            	return this.allTransactions.reduce((acc, val) => val.account_id == this.account.id ? acc + Number(val.amount) : acc, 0)
+				return this.allTransactions.reduce((acc, val) => val.account_id == this.account.id ? acc + Number(val.amount) : acc, 0)
 			}
         },
 
