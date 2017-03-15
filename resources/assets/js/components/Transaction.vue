@@ -66,7 +66,6 @@
 			updateBudget(e){
 				let transaction = this.transaction;
 				transaction.budget_id =  parseInt(e.target.value)
-				console.log(transaction)
 				this.$store.dispatch("editTransaction", transaction)
 			},
 
