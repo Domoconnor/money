@@ -15,6 +15,8 @@ class StoreTransactionRequest extends FormRequest
      */
     public function authorize()
     {
+
+    	//Check if the user owns the account they are trying to add a transaction for
     	$account = Account::find($this->route('account'));
 
     	if($account->user_id === Auth::user()->id)

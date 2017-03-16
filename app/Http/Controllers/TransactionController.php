@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use Auth;
 use App\Budget;
 use App\Account;
 use App\Transaction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use League\Flysystem\Exception;
 
@@ -44,7 +46,7 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  StoreTransactionRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreTransactionRequest $request, Account $account)
@@ -52,14 +54,7 @@ class TransactionController extends Controller
 		$transaction = new Transaction($request->except('budget'));
 		$transaction->account()->associate($account);
 		$transaction->budget()->associate(Budget::find($request->budget));
-		try
-		{
-			$transaction->save();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could create the transaction');
-		}
+		$transaction->save();
 
 		return $this->returnSuccess($transaction);
     }
@@ -99,7 +94,7 @@ class TransactionController extends Controller
 		{
 			$transaction = Transaction::findorfail($id);
 		}
-		catch (Exception $e)
+		catch (ModelNotFoundException $e)
 		{
 			return $this->returnError('404', 'Transaction not found');
 		}
@@ -107,17 +102,8 @@ class TransactionController extends Controller
 		//Check the user has permission to update this transaction
 		$this->authorize('update', $transaction);
 
-
 		$transaction->fill($request->all());
-
-		try
-		{
-			$transaction->save();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could not save transaction');
-		}
+		$transaction->save();
 
 		return $this->returnSuccess($transaction);
 	}
@@ -135,21 +121,16 @@ class TransactionController extends Controller
 		{
 			$transaction = Transaction::findorfail($id);
 		}
-		catch (Exception $e)
+		catch (ModelNotFoundException $e)
 		{
 			return $this->returnError('404', 'Could not find transaction');
 		}
 
+		//Check the user has permission to delete the transaction
 		$this->authorize('destroy', $transaction);
 
-		try
-		{
-			$transaction->delete();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could not delete transaction');
-		}
+    	$transaction->delete();
+
 		return $this->returnSuccess();
     }
 }

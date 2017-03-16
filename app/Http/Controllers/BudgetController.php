@@ -38,14 +38,7 @@ class BudgetController extends Controller
     {
 		$budget = new Budget($request->all());
 		$budget->user()->associate(Auth::user());
-		try
-		{
-			$budget->save();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could create the budget');
-		}
+		$budget->save();
 
 		return $this->returnSuccess($budget);
     }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Account;
 use Auth;
+use App\Account;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use League\Flysystem\Exception;
+use App\Http\Requests\StoreAccountRequest;
 
 class AccountController extends Controller
 {
@@ -41,18 +43,11 @@ class AccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreAccountRequest $request)
     {
         $account = new Account($request->all());
         $account->user()->associate(Auth::user());
-        try
-		{
-			$account->save();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could not save account');
-		}
+		$account->save();
 
 		return $this->returnSuccess($account);
     }
@@ -69,7 +64,7 @@ class AccountController extends Controller
 		{
 			$account = Account::findorfail($id);
 		}
-		catch (Exception $e)
+		catch (ModelNotFoundException $e)
 		{
 			return $this->returnError('404', 'Account not found');
 		}
@@ -107,16 +102,10 @@ class AccountController extends Controller
 			return $this->returnError('404', 'Account not found');
 		}
 
-		$account->fill($request->all());
-		try
-		{
-			$account = $account->save();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could not update Account');
-		}
+		$this->authorize('update', $account);
 
+		$account->fill($request->all());
+		$account->save();
 
 		return $this->returnSuccess($account);
     }
@@ -129,15 +118,17 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-        try
+
+    	try
 		{
 			$account = Account::findorfail($id);
-			$account->delete();
 		}
-		catch (Exception $e)
+		catch (ModelNotFoundException $e)
 		{
-			return $this->returnError('500', 'Could not delete Account');
+			$this->returnError('404', 'Account not found');
 		}
+
+		$account->delete();
 		return $this->returnSuccess();
 
 	}

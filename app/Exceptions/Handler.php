@@ -44,6 +44,17 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+    	//If there is an unhandled error from an api call and we're not in debug mode
+		//return a standard 500 json response
+		if ( $request->isXmlHttpRequest() && !env('APP_DEBUG') ) {
+			return response()->json([
+				'status'    => 'error',
+				'code'      => 500,
+				'message'   => 'Internal Server Error',
+				'data'      => []
+			], 500);
+		}
+
         return parent::render($request, $exception);
     }
 
