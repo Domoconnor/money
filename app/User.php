@@ -56,4 +56,9 @@ class User extends SparkUser
 	public function transactions() {
     	return $this->hasManyThrough('App\Transaction', 'App\Account');
 	}
+
+	public function budgets()
+	{
+		return $this->hasMany('App\Budget');
+	}
 }

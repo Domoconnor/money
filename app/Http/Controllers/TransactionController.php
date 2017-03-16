@@ -1,22 +1,31 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\StoreAccountRequest;
+use App\Http\Requests\StoreTransactionRequest;
 use Auth;
+use App\Budget;
 use App\Account;
 use App\Transaction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use League\Flysystem\Exception;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+	/**
+	 * Returns all the transactions belonging to an account. If nothing is passed in then the logged in user's details
+	 * transactions are returned
+	 *
+	 * @param null|Account $account	The account object to get the list of transactions for
+	 * @return \Illuminate\Http\JsonResponse
+	 */
     public function index($account = null)
     {
         if($account)
 		{
+			$this->authorize('view', $account);
 			return $this->returnSuccess(Account::findorfail($account)->transactions()->get());
 		}
 		return $this->returnSuccess(Auth::user()->transactions()->get());
@@ -37,21 +46,15 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  StoreTransactionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $account)
+    public function store(StoreTransactionRequest $request, Account $account)
     {
-		$transaction = new Transaction($request->all());
+		$transaction = new Transaction($request->except('budget'));
 		$transaction->account()->associate($account);
-		try
-		{
-			$transaction->save();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could create the transaction');
-		}
+		$transaction->budget()->associate(Budget::find($request->budget));
+		$transaction->save();
 
 		return $this->returnSuccess($transaction);
     }
@@ -91,20 +94,16 @@ class TransactionController extends Controller
 		{
 			$transaction = Transaction::findorfail($id);
 		}
-		catch (Exception $e)
+		catch (ModelNotFoundException $e)
 		{
 			return $this->returnError('404', 'Transaction not found');
 		}
 
+		//Check the user has permission to update this transaction
+		$this->authorize('update', $transaction);
+
 		$transaction->fill($request->all());
-		try
-		{
-			$transaction->save();
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('500', 'Could not save transaction');
-		}
+		$transaction->save();
 
 		return $this->returnSuccess($transaction);
 	}
@@ -117,6 +116,21 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+    	try
+		{
+			$transaction = Transaction::findorfail($id);
+		}
+		catch (ModelNotFoundException $e)
+		{
+			return $this->returnError('404', 'Could not find transaction');
+		}
+
+		//Check the user has permission to delete the transaction
+		$this->authorize('destroy', $transaction);
+
+    	$transaction->delete();
+
+		return $this->returnSuccess();
     }
 }

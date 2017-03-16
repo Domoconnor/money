@@ -4,11 +4,13 @@
 
 		<div class="panel-body">
 			<i @click="addTransaction" class="glyphicon glyphicon-plus"></i>
-			<table v-if="allTransactions" class="table table-striped">
+			<table class="table table-striped">
 				<thead>
 				<tr>
 					<th>Name</th>
+					<th>Budget</th>
 					<th>Amount</th>
+					<th>Delete</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -17,13 +19,17 @@
 						<input type="text-area" v-model="form.name" class="form-control" @keyup.enter="addTransaction({form, currentAccount})">
 					</td>
 					<td>
+						<select v-model="form.budget">
+							<option v-for="budget in allBudgets" v-bind:value="budget.id">{{budget.name}}</option>
+						</select>
+					</td>
+					<td>
 						<input type="text-area" v-model="form.amount" class="form-control" @keyup.enter="addTransaction({form, currentAccount})">
 					</td>
 				</tr>
-				<transaction  v-for="(transaction, key) in allTransactions" :transaction="transaction"></transaction>
+				<transaction v-if="allTransactions" v-for="(transaction, key) in allTransactions" :transaction="transaction"></transaction>
 				</tbody>
 			</table>
-			{{currentAccount}}
 		</div>
 	</div>
 </template>
@@ -38,6 +44,9 @@
 			return {
 				form: {
 					name: '',
+					budget: {
+						id: ''
+					},
 					amount: ''
 				}
 			}
@@ -45,10 +54,11 @@
 
 		mounted() {
 			this.getTransactions();
+			this.getBudgets();
 		},
 
 		computed: {
-			...mapGetters(['allTransactions', 'currentAccount'])
+			...mapGetters(['allTransactions', 'currentAccount', 'allBudgets'])
 		},
 
 		methods: {
@@ -61,7 +71,7 @@
 					})
 			},
 
-			...mapActions(['addTransaction', 'getTransactions']),
+			...mapActions(['addTransaction', 'getTransactions', 'getBudgets']),
 		}
 	}
 </script>

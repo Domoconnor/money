@@ -2,15 +2,17 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
+import budgets from './modules/budgets';
+import accounts from './modules/accounts';
+import transactions from './modules/transactions';
 
 Vue.use(Vuex);
-import transactions from './modules/transactions';
-import accounts from './modules/accounts'
 export default new Vuex.Store({
 
 	modules: {
 		transactions,
 		accounts,
+		budgets
 	}
 
 })

@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Account;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Budget;
 use Illuminate\Http\Request;
-use League\Flysystem\Exception;
-use App\Http\Requests\StoreAccountRequest;
 
-class AccountController extends Controller
+class BudgetController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,13 +15,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-    	$accounts = Auth::user()->accounts()->get();
-    	foreach ($accounts as &$account)
-		{
-			$account->sum = $account->getSum();
-		}
-
-        return $this->returnSuccess($accounts);
+		return $this->returnSuccess(Auth::user()->budgets()->get());
     }
 
     /**
@@ -43,13 +34,13 @@ class AccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAccountRequest $request)
+    public function store(Request $request)
     {
-        $account = new Account($request->all());
-        $account->user()->associate(Auth::user());
-		$account->save();
+		$budget = new Budget($request->all());
+		$budget->user()->associate(Auth::user());
+		$budget->save();
 
-		return $this->returnSuccess($account);
+		return $this->returnSuccess($budget);
     }
 
     /**
@@ -60,18 +51,7 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-        try
-		{
-			$account = Account::findorfail($id);
-		}
-		catch (ModelNotFoundException $e)
-		{
-			return $this->returnError('404', 'Account not found');
-		}
-
-		$account->sum = $account->getSum();
-
-		return $this->returnSuccess($account);
+        //
     }
 
     /**
@@ -82,6 +62,7 @@ class AccountController extends Controller
      */
     public function edit($id)
     {
+        //
     }
 
     /**
@@ -93,21 +74,7 @@ class AccountController extends Controller
      */
     public function update(Request $request, $id)
     {
-		try
-		{
-			$account = Account::findorfail($id);
-		}
-		catch (Exception $e)
-		{
-			return $this->returnError('404', 'Account not found');
-		}
-
-		$this->authorize('update', $account);
-
-		$account->fill($request->all());
-		$account->save();
-
-		return $this->returnSuccess($account);
+        //
     }
 
     /**
@@ -118,18 +85,6 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-
-    	try
-		{
-			$account = Account::findorfail($id);
-		}
-		catch (ModelNotFoundException $e)
-		{
-			$this->returnError('404', 'Account not found');
-		}
-
-		$account->delete();
-		return $this->returnSuccess();
-
-	}
+        //
+    }
 }
