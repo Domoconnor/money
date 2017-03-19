@@ -36,21 +36,32 @@ const actions = {
 	},
 
 	addBudget({commit}, {name: name, amount: amount}) {
-		commit('ADD_BUDGET', {name, amount})
+		let budget = {name, amount};
+
+		commit('ADD_BUDGET', budget)
 		axios.post('/api/budget', {
 			name,
 			amount
 		})
+			.catch(function (error) {
+				commit('DELETE_BUDGET', budget)
+			})
 	},
 
 	deleteBudget({commit}, budget) {
 		commit('DELETE_BUDGET', budget)
 		axios.delete('/api/budget/'+budget.id)
+			.catch(function (error) {
+				commit('ADD_BUDGET', budget)
+			})
 	},
 
 	editBudget({commit}, budget){
 		commit('EDIT_BUDGET', budget)
 		axios.put(`/api/budget/${budget.id}`, JSON.parse(JSON.stringify(budget)))
+			.catch(function (error) {
+				this.$store.dispatch("getBudgets")
+			})
 	}
 }
 
