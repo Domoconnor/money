@@ -16,7 +16,7 @@ class CreateTransactionsTable extends Migration
 		Schema::create('transactions', function (Blueprint $table) {
 			$table->increments('id');
 			$table->integer('account_id');
-			$table->integer('budget_id');
+			$table->integer('budget_id')->nullable();
 			$table->string('name');
 			$table->decimal('amount', 6, 2);
 			$table->timestamps();

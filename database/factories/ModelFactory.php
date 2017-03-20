@@ -16,9 +16,22 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
-        'name' => "Dom O'Connor",
-        'email' => "dom@domoconnor.co.uk",
+        'name' => $faker->name,
+        'email' => $faker->email,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
     ];
+});
+
+$factory->define(App\Account::class, function (Faker\Generator $faker) {
+	return [
+		'name' => $faker->word,
+	];
+});
+
+$factory->define(App\Transaction::class, function (Faker\Generator $faker) {
+	return [
+		'name' => $faker->word,
+		'amount' => $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 9999.99)
+	];
 });

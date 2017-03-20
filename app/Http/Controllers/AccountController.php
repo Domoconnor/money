@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Account;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use League\Flysystem\Exception;
 use App\Http\Requests\StoreAccountRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AccountController extends Controller
 {

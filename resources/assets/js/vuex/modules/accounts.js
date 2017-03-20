@@ -46,17 +46,28 @@ const actions = {
 		commit('ADD_ACCOUNT', account)
 		axios.post('/api/account', {
 			name: account.name
-		})
+			})
+			.catch(function (error) {
+				commit('DELETE_ACCOUNT', account)
+			})
+
 	},
 
 	deleteAccount({commit}, account) {
 		commit('DELETE_ACCOUNT', account)
 		axios.delete('/api/account/'+account.id)
+			.catch(function (error) {
+				commit('ADD_ACCOUNT', account)
+			})
 	},
 
+	//todo: work out how to nicely handle rolling back optimistic updates without reloading everything
 	 editAccount({commit}, account){
 		commit('EDIT_ACCOUNT', account)
  		axios.put(`/api/account/${account.id}`, JSON.parse(JSON.stringify(account)))
+			.catch(function (error) {
+				this.$store.dispatch("getAccounts")
+			})
 	 },
 
 	 setCurrentAccount({commit}, account){
