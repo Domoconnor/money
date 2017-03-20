@@ -18,7 +18,9 @@ class TransactionTest extends TestCase
 	private $user;
 	private $account;
 	private $other_user;
+	private $transaction;
 	private $other_account;
+	private $other_transaction;
 
 	public function setUp()
 	{
@@ -34,20 +36,16 @@ class TransactionTest extends TestCase
 		$this->other_account = factory(Account::class)->create([
 			'user_id' => $this->other_user->id
 		]);
+
+		$this->transaction = factory(Transaction::class)->create([
+			'account_id' => $this->account->id
+		]);
+
+		$this->other_transaction = factory(Transaction::class)->create([
+			'account_id' => $this->other_account->id
+		]);
 	}
 
-	//Create Transaction permissions
-	/**
-	 * @test
-	 */
-	public function unauthed_user_cannot_create_transaction()
-	{
-
-		$transaction = factory(Transaction::class)->make();
-		$response = $this->json('POST', '/api/account/' . $this->account->id . "/transaction", ["name" => $transaction->name, "amount" => $transaction->amount]);
-		$response->assertStatus(401);
-
-	}
 
 	/**
 	 * @test
@@ -85,8 +83,65 @@ class TransactionTest extends TestCase
 
 	//Delete transaction permissions
 
-	//Edit transaction permissions
+	/**
+	 * @test
+	 */
+	public function user_cannot_delete_others_transactions()
+	{
+		$this->actingAs($this->other_user);
+		$response = $this->json('DELETE', '/api/transaction/' . $this->transaction->id);
 
+		$response->assertStatus(403);
+	}
+
+	/**
+	 * @test
+	 */
+	public function user_can_delete_own_transaction()
+	{
+		$this->actingAs($this->user);
+		$response = $this->json('DELETE', '/api/transaction/' . $this->transaction->id);
+
+		$response->assertStatus(200);
+
+		$this->assertDatabaseMissing('transactions', [
+			'id' => $this->transaction->id
+		]);
+	}
+
+	//Edit transaction permissions
+	/**
+	 * @test
+	 */
+	public function user_cannot_edit_others_transactions()
+	{
+		$this->actingAs($this->other_user);
+		$response = $this->json('PUT', '/api/transaction/' . $this->transaction->id);
+
+		$response->assertStatus(403);
+	}
+
+	/**
+	 * @test
+	 */
+	public function user_can_edit_own_transaction()
+	{
+		$this->actingAs($this->user);
+		$response = $this->json('PUT', '/api/transaction/' . $this->transaction->id, [
+			'name' => 'edited',
+			'amount' => 1
+		]);
+
+		$response->assertStatus(200);
+
+		$this->assertDatabaseHas('transactions', [
+			'id' => $this->transaction->id,
+			'name' => 'edited',
+			'amount' => 1
+		]);
+
+
+	}
 	//Show transaction permissions
 
 
