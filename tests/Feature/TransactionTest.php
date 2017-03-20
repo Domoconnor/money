@@ -142,7 +142,6 @@ class TransactionTest extends TestCase
 
 
 	}
-	//Show transaction permissions
 
 
 }
