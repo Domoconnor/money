@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Account;
 use Tests\TestCase;
 use App\Transaction;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -15,35 +13,13 @@ class TransactionTest extends TestCase
 
 	use DatabaseTransactions;
 
-	private $user;
-	private $account;
-	private $other_user;
-	private $transaction;
-	private $other_account;
-	private $other_transaction;
-
 	public function setUp()
 	{
 		parent::setUp();
 
-		$this->user = factory(User::class)->create();
-		$this->other_user = factory(User::class)->create();
-
-		$this->account = factory(Account::class)->create([
-			'user_id' => $this->user->id
-		]);
-
-		$this->other_account = factory(Account::class)->create([
-			'user_id' => $this->other_user->id
-		]);
-
-		$this->transaction = factory(Transaction::class)->create([
-			'account_id' => $this->account->id
-		]);
-
-		$this->other_transaction = factory(Transaction::class)->create([
-			'account_id' => $this->other_account->id
-		]);
+		$this->create_users();
+		$this->create_accounts();
+		$this->create_transactions();
 	}
 
 

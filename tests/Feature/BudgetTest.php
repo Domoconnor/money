@@ -3,8 +3,6 @@
 namespace Tests\Feature;
 
 use App\Budget;
-use App\User;
-use App\Account;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -13,25 +11,14 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class BudgetTest extends TestCase
 {
    //Store
-	private $user;
-	private $account;
-	private $other_user;
-	private $other_account;
+
 
 	public function setUp()
 	{
 		parent::setUp();
 
-		$this->user = factory(User::class)->create();
-		$this->other_user = factory(User::class)->create();
-
-		$this->account = factory(Account::class)->create([
-			'user_id' => $this->user->id
-		]);
-
-		$this->other_account = factory(Account::class)->create([
-			'user_id' => $this->other_user->id
-		]);
+		$this->create_users();
+		$this->create_accounts();
 
 	}
 
