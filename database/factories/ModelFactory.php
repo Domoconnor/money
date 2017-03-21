@@ -35,3 +35,10 @@ $factory->define(App\Transaction::class, function (Faker\Generator $faker) {
 		'amount' => $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 9999.99)
 	];
 });
+
+$factory->define(App\Budget::class, function (Faker\Generator $faker) {
+	return [
+		'name' => $faker->word,
+		'amount' => $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 9999.99)
+	];
+});
