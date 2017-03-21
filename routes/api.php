@@ -14,7 +14,10 @@
 Route::group([
     'middleware' => 'auth:api'
 ], function () {
-	Route::resource('account', 'AccountController');
+	Route::resource('user.account', 'AccountController');
+	Route::resource('account', 'AccountController',['only' => [
+		'show', 'index', 'update', 'destroy'
+	]]);
 	Route::resource('account.transaction', 'TransactionController');
 	Route::resource('transaction', 'TransactionController', ['only' => [
 		'show', 'index', 'update', 'destroy'

@@ -10,8 +10,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class BudgetTest extends TestCase
 {
-   //Store
 
+	use DatabaseTransactions;
 
 	public function setUp()
 	{
