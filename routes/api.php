@@ -19,5 +19,8 @@ Route::group([
 	Route::resource('transaction', 'TransactionController', ['only' => [
 		'show', 'index', 'update', 'destroy'
 	]]);
-	Route::resource('budget', 'BudgetController');
+	Route::resource('user.budget', 'BudgetController');
+	Route::resource('budget', 'BudgetController', ['only' => [
+		'show', 'index', 'update', 'destroy'
+	]]);
 });

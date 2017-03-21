@@ -42,7 +42,7 @@ class BudgetTest extends TestCase
 	public function user_cannot_create_budget_for_other_user()
 	{
 		$this->actingAs($this->user);
-		$response = $this->json('POST', '/api/budget');
+		$response = $this->json('POST', '/api/user/' . $this->other_user->id . '/budget');
 		$response->assertStatus(403);
 	}
 
@@ -54,7 +54,7 @@ class BudgetTest extends TestCase
 		$budget = factory(Budget::class)->make();
 
 		$this->actingAs($this->user);
-		$response = $this->json('POST', '/api/budget', ['name' => $budget->name, 'amount' => $budget->amount]);
+		$response = $this->json('POST', '/api/user/' . $this->user->id . '/budget', ['name' => $budget->name, 'amount' => $budget->amount]);
 
 		$response
 			->assertStatus(200)

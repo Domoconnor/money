@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBudetRequest;
 use Auth;
+use App\User;
 use App\Budget;
 use Illuminate\Http\Request;
 
@@ -13,8 +15,13 @@ class BudgetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($account = null)
     {
+		if($account)
+		{
+			//todo: add policy for this
+			return $this->returnSuccess(Account::findorfail($account)->budgets()->get());
+		}
 		return $this->returnSuccess(Auth::user()->budgets()->get());
     }
 
@@ -31,13 +38,13 @@ class BudgetController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  StoreBudetRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreBudetRequest $request, User $user)
     {
 		$budget = new Budget($request->all());
-		$budget->user()->associate(Auth::user());
+		$budget->user()->associate($user);
 		$budget->save();
 
 		return $this->returnSuccess($budget);
