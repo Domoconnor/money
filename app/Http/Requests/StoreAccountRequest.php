@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAccountRequest extends FormRequest
@@ -13,7 +13,14 @@ class StoreAccountRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+		$user = $this->route('user');
+
+		if($user->id === Auth::user()->id)
+		{
+			return true;
+		}
+
+		return false;
     }
 
     /**

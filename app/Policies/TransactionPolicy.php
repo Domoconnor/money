@@ -20,17 +20,14 @@ class TransactionPolicy
         //
     }
 
-
 	public function update(User $user, Transaction $transaction)
 	{
 		return $this->allowUser($user, $transaction);
 	}
 
-
 	public function destroy(User $user, Transaction $transaction)
 	{
 		return $this->allowUser($user, $transaction);
-
 	}
 
 	/**
