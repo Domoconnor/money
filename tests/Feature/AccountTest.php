@@ -83,4 +83,37 @@ class AccountTest extends TestCase
 			'id' => $this->account->id
 		]);
 	}
+
+	/**
+	 * @test
+	 */
+	public function user_cannot_update_other_users_accounts()
+	{
+		$this->create_accounts();
+
+		$this->actingAs($this->user);
+		$response = $this->json('put', '/api/account/' . $this->other_account->id);
+
+		$response->assertStatus(403);
+	}
+
+	/**
+	 * @test
+	 */
+	public function user_can_update_own_account()
+	{
+		$this->create_accounts();
+
+		$this->actingAs($this->user);
+		$response = $this->json('put', '/api/account/' . $this->account->id, [
+			'name' => 'updated'
+		]);
+
+		$response->assertStatus(200);
+
+		$this->assertDatabaseHas('accounts',[
+			'id' => $this->account->id,
+			'name' => 'updated'
+		]);
+	}
 }
