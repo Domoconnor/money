@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\User;
 use App\Account;
 use Illuminate\Http\Request;
 use League\Flysystem\Exception;
@@ -14,7 +15,9 @@ class AccountController extends Controller
     /**
      * Display a listing of the resource.
      *
+	 * todo: Don't base this entirely on auth::user(), take an id
      * @return \Illuminate\Http\Response
+	 *
      */
     public function index()
     {
@@ -43,10 +46,10 @@ class AccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAccountRequest $request)
+    public function store(StoreAccountRequest $request, User $user)
     {
         $account = new Account($request->all());
-        $account->user()->associate(Auth::user());
+        $account->user()->associate($user);
 		$account->save();
 
 		return $this->returnSuccess($account);
@@ -97,7 +100,7 @@ class AccountController extends Controller
 		{
 			$account = Account::findorfail($id);
 		}
-		catch (Exception $e)
+		catch (ModelNotFoundException $e)
 		{
 			return $this->returnError('404', 'Account not found');
 		}
@@ -118,7 +121,6 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-
     	try
 		{
 			$account = Account::findorfail($id);
@@ -127,6 +129,8 @@ class AccountController extends Controller
 		{
 			$this->returnError('404', 'Account not found');
 		}
+
+		$this->authorize('destroy', $account);
 
 		$account->delete();
 		return $this->returnSuccess();
